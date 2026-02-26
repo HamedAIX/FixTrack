@@ -30,16 +30,30 @@ async function startServer() {
     });
   } catch (error) {
     console.error("Failed to start server:", error);
+    process.exit(1);
   }
 }
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
+async function connectDatabaseAndStart() {
+  if (!MONGO_URI) {
+    console.error("✗ MONGO_URI is missing.");
+    console.error(
+      "Set MONGO_URI in Render Environment Variables (or local .env for development).",
+    );
+    process.exit(1);
+  }
+
+  try {
+    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 15000 });
     console.log("✓ Connected to MongoDB");
-    startServer();
-  })
-  .catch((err) => console.error("✗ MongoDB Connection Error:", err));
+    await startServer();
+  } catch (err) {
+    console.error("✗ MongoDB Connection Error:", err.message);
+    process.exit(1);
+  }
+}
+
+connectDatabaseAndStart();
 
 const orderSchema = new mongoose.Schema(
   {
