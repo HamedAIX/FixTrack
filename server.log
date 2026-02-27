@@ -1,9 +1,0 @@
-nohup: ignoring input
-
-> fixtrack-server@1.0.0 start
-> node server.js
-
-✓ Connected to MongoDB
-✓ Admin already exists
-Error: Port 3001 is already in use!
-Please run: killall node   # to stop all node processes
